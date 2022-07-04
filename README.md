@@ -74,6 +74,11 @@ L1     | p1  | p2  | p3  | ... | pn  |
 ...    |     |     |     | 0   |     |
 **pn** | dn1 | dn2 | dn3 |     | 0   |
 
+- Calculation should not depend on the choice of measurement units. Thus, if necessary, some normalization may come into hand not to distort cluster allocation with the outweighting of attributes. Such as:
+  - Decimal scaling normalization.
+  - Min-max normalization.
+  - Z-score normalization.
+
 ## Set of partitioning based algorithms
 
 The ideia in this specific set is to allocate the instances into a pre-defined number of sets. It's done iteratively by calculating the distances to specific points of the attributes' dimensions space until some criteria is fulfilled.
@@ -124,10 +129,81 @@ $$ E = ∑  k Clusters  ∑  Inside Cluster J  |p - cj| $$
 - Cluster centers as instances always.
 - Swap cluster centers based on cost function.
 
+## Non-numerical attributes
 
+*How do you measure the distance between the fact that a banana is yellow and an apple is red?* They are nominal attributes and can't be ordered.
 
+Well you use non-numerical distance metrics:
 
+#### Hamming distance for **Nominal Data**:
+> Counts the number os attributes different between two instances and add 1 for each one dissimilar. The number is then divided by the number of attributes and falls into the range [0 1] for **Dissimilarity Measure**.
 
+#### Distance of binary data:
+> Convert the values to 1 and 0 and put the values in a table.
+
+![image](https://user-images.githubusercontent.com/86890905/177174328-db2eb269-4a4d-414a-8620-7e448f5fe0d4.png)
+
+Xi and Xj different instances with their attributes added to 1 or 0 depending if True or False. Distance between instances as **dissimilarity measure**:
+
+$$ d(Xi, Xj) = (b + c) / (a + b + c + d) $$ or 
+$$ d(Xi, Xj) = (b + c) / (a + b + c) $$ if data distribution is not symmetric (skewed). 
+
+#### Distance of ordinal data:
+> Convert the ordinal value into a rank assigning to it a number from the range [1 R], with R being the final rank of the data.
+
+- Normalize the data into values of the range [0 1] by doing:
+
+$$ rn = (r - 1) / (R - 1) $$
+
+## Different approaches to solve Clustering Problems
+
+Following the given list before of different approaches, our second one will be **Hierarchical Clustering**. The procedure follows:
+
+1. Compute proximities between instances with the distance metric most appropriate.
+2. Starts with each instance as being one cluster.
+3. Identify the two closest clusters.
+4. Merge them.
+5. Repeat 3 and 4 until there's only one cluster remaining.
+
+- One could go **Bottom-up**, merging the clusters as described or **Top-down** (rare), splitting the clusters from one big cluster.
+
+The difference of performance comes from the computation of the proximity of two clusters.
+
+### How to calculate proximity of two clusters
+
+#### Single Linkage
+
+Pick the closest two instances of the two clusters and calculate the distance.
+
+- Tends to chaining.
+- If there's noise, it could be non effective.
+
+#### Complete Linkage
+
+Pick the furthest two instances of the two clusters and calculate the distance.
+
+- Tends to break large clusters.
+- If there's noise, it could still be effective.
+
+#### Average Linkage
+
+Take the average of computing the distance between all instances of the two clusters.
+
+- Biased to globular clusters.
+- If there's noise, it could still be effective.
+
+#### Centroid Linkage
+
+Take the distance between centroids of the two clusters.
+
+- Less popular technique.
+
+#### Ward's Method
+
+Take the sum of the square of the distances between each instance from the two clusters.
+
+- Biased to globular clusters.
+- If there's noise, it could still be effective.
 
 
 
