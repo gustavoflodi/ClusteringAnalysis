@@ -305,11 +305,64 @@ $$ f~Gauss~ (x, y) = e^-(d(x, y)^2) / 2σ^2 $$
 - Outliers' influences remain below threshold.
 - Sigma and xii need to be set. And then iterated for optimal solution.
 
+## Validating clusters
 
+After the model is built, we have to validate the final results. In order to do that, we could have:
 
+- Internal parameters: often based in **compactness, connectedness and separation**. Properties of data points to specific parameters.
+- External parameters: comparing the results of the clustering to external known results. Expert's analysis.
+- Relative criteria: other clustering analyses with different parameters or algorithms resulting in similar patterns.
 
+### How to measure the internal parameters of your clusters
 
+#### Compactness
 
+> Measuring distance inside cluster. If high, that means that intraclass similarity is high.
+
+**1. Cluster density:** 
+
+$$ (1/n) * Σ(xi -c) $$ 
+
+c being the cluster center and xi being an instance.
+
+**2. Variance:** 
+
+$$ Σ(xi -c)^2 $$ 
+
+c being the cluster center and xi being an instance.
+
+**3. Average Variance:** 
+
+$$ (1/n) * Σ(xi -c)^2 $$ 
+
+c being the cluster center and xi being an instance.
+
+- In a chart of **Average Cluster Density X k**, it's important to locate the **elbow** for an optimal number of k.
+- To apply the formular above to the whole model, you could take the average in regards to the clusters.
+
+#### Separation
+
+> Measuring distance between clusters. If high, that means that interclass dissimilarity is high.
+
+**1. Single Linkage**: distance between the two closest instances from two different clusters.
+
+**2. Complete Linkage**: distance between two most distant instances.
+
+**3. Average Linkage**: average distance between each instance of one cluster to every instance from other one.
+
+**4. Distance of cluster centers**: distance between the centers of the clusters.
+
+#### Other distance measures
+
+They try to combine compactness and separation into a metric.
+
+- Average cluster density.
+- BIC.
+- Davies-Bouldin.
+- Silhouette.
+- Dunn.
+- Niva.
+- ...
 
 
 
