@@ -205,12 +205,105 @@ Take the sum of the square of the distances between each instance from the two c
 - Biased to globular clusters.
 - If there's noise, it could still be effective.
 
+## Yet another approach for clustering
 
+Following the set of approaches for clustering algorithms, now we have our third type: **Model-based clustering methods (Gaussian Mixed Model)**.
 
+### Cluster membership
 
+- For k-means and k-medoids, if the instance was within a certain distance from a cluster, the probability of it to belong to that cluster is 1 and to others is 0.
+  - It either is or is not. Binary.
+  - Each instance belongs to exactly one cluster (partition).
+- For the **Gaussian Mixed Models**, an instance is vulnerable to normal distributions in the space, with each normal/bell/gaussian distribution being a cluster. Therefore, it has different values of probability to belong to each cluster and it's not 0 nor 1 anywhere, but continuous in the space.
+  - Each instance belongs to every cluster.
+  - No strict boundaries between clusters since they are now distributions of probabilities.
+  - There is no actual assignment to a single cluster for an instance.
+  
+### Expectation Maximization Algorithm (EM)
 
+1. Randomly pick k distribution curves by choosing the μ (mean) σ (standard deviation), randomly as well, for each.
+2. E-Step: calculate expected cluster memberships.
+3. M-Step: re-estimate model parameters (refine memberships).
+4. Use Maximum Likelihood Function to describe the probability of the instances to belong to the clusters.
+5. Repeat 2, 3 and 4 until function cannot be increased.
 
+In simpler words, we want to **maximize the probabilities** of the instances to belong to the clusters. And this can be done with Bayes' Theorem:
+- Probability for instance x~i~ to be allocated to a cluster A:
 
+$$ p(A|x~i~) = (p(x~i~|A) * p(A)) / p(x~i~) $$ 
+
+And p(x~i~) can be considered ~ 1.
+
+- Probability for instance x~i~ to be in a cluster A:
+
+$$ p(x~i~|A) $$
+
+- Probability for any instance to be in a cluster A:
+
+$$ p(A) $$
+
+> Then the ML Function becomes a product across all instances of the probability of it to belong to every cluster.
+
+$$ ML Function: Π~i~ (p(A) * p(x~i~|A) + p(B) * p(x~i~|B) + ...)
+
+#### Considerations of the Algorithm
+
+- If a cluster is too **narrow**: widening it, could increase the contributions from nearby instances.
+- If a cluster is too **wide**: separating it in more clusters, could also increase contribution.
+
+#### Comparison of K-means and EM
+
+| k-means                                           | EM                         |
+| ---                                               | ---                        |
+| Mean                                              | Center μ of Gaussian Curve |
+| Cluster membership                                | Standard Deviation σ       |
+| Non-Change in Cluster membership as stop criteria | Non-Change of ML Function  |
+
+- Both estimated randomly the mean, the center and the standard deviation.
+  - These parameters are later improved through iteration.
+- Advantages of EM:
+  - It evaluates the k parameters: if it returns a high probability, then it's a good choice. One could also run k-Means before to estimate the center for EM.
+  - Robust against outliers: the center is not influenced by the distance of outliers since their probabilities are small.
+ 
+## Fourth set of methods
+
+Now for the final approach, we have **Density based clustering methods**. Its principles follow:
+
+- Clusters are built where instances are dense, i.e., close to each other. Therefore, a pre-defined distance has to be chosen to evidence closeness.
+- If an instance has few neighbors, it's an outlier without a cluster.
+
+**Procedure**:
+
+1. Location of instances in coordinate system.
+2. Define density measure. And calculate how close the instances are from their neighbors.
+3. Determine cluster boundaries. Define a threshold to be the criteria of cluster membership.
+
+### DENCLUE Algorithm
+
+Specific algorithm from the density based methods.
+
+- Each instance posses an influence function.
+- The more instances close to that instance the higher the aggregated influence.
+- Influence in a point is calculated by summing all influence functions there.
+- Two parameters to control:
+  - σ Influence, Spread: the higher the sigma, the more you will have overlaps from the influence functions.
+  - ξ Threshold for Influence: "water level" that denote sufficient influence. The higher the xii, the smaller the cluster areas.
+
+#### Common influence functions
+
+- Gaussian normal distribution.
+
+$$ f~Gauss~ (x, y) = e^-(d(x, y)^2) / 2σ^2 $$
+
+- Square-function. f~s~ = 0 if d(x, y) > σ otherwise 1.
+
+#### Consideration of DENCLUE
+
+- Domain expert evaluates the clusters' quality.
+- Cluster is a continuous not necessarily sphere-shaped area where influence is what surpasses the threshold.
+- Clusters could have holes and be complex.
+- Outliers' influences remain below threshold.
+- Sigma and xii need to be set. And then iterated for optimal solution.
 
 
 
